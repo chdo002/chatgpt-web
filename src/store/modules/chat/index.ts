@@ -43,6 +43,13 @@ export const useChatStore = defineStore('chat-store', {
       }
     },
 
+    clearHistory() {
+      this.history = []
+      this.chat = []
+      this.active = null
+      this.reloadRoute()
+    },
+
     async deleteHistory(index: number) {
       this.history.splice(index, 1)
       this.chat.splice(index, 1)

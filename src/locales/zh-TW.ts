@@ -29,6 +29,7 @@ export default {
   },
   chat: {
     newChatButton: '新建對話',
+    clearChatButton: '清空聊天',
     placeholder: '來說點什麼...（Shift + Enter = 換行，"/" 觸發提示詞）',
     placeholderMobile: '來說點什麼...',
     copy: '複製',

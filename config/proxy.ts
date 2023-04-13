@@ -1,16 +1,16 @@
-import type { ProxyOptions } from 'vite'
-
 export function createViteProxy(isOpenProxy: boolean, viteEnv: ImportMetaEnv) {
-  if (!isOpenProxy)
-    return
+  // eslint-disable-next-line no-useless-return
+  return
+  // if (!isOpenProxy)
+  //   return
 
-  const proxy: Record<string, string | ProxyOptions> = {
-    '/api': {
-      target: viteEnv.VITE_APP_API_BASE_URL,
-      changeOrigin: true,
-      rewrite: path => path.replace('/api/', '/'),
-    },
-  }
+  // const proxy: Record<string, string | ProxyOptions> = {
+  //   '/api': {
+  //     target: viteEnv.VITE_APP_API_BASE_URL,
+  //     changeOrigin: true,
+  //     rewrite: path => path.replace('/api/', '/'),
+  //   },
+  // }
 
-  return proxy
+  // return proxy
 }
