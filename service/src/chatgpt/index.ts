@@ -28,21 +28,36 @@ const disableDebug: boolean = process.env.OPENAI_API_DISABLE_DEBUG === 'true'
 
 let apiModel: ApiModel
 
-if (!isNotEmptyString(process.env.OPENAI_API_KEY) && !isNotEmptyString(process.env.OPENAI_ACCESS_TOKEN))
+function setApiKey(key: string) {
+  process.env.OPENAI_API_KEY = key
+}
+function setAccessToken(token: string) {
+  process.env.OPENAI_ACCESS_TOKEN = token
+}
+
+function getApiKey(): string {
+  return process.env.OPENAI_API_KEY
+}
+
+function getAccessToken(): string {
+  return process.env.OPENAI_ACCESS_TOKEN
+}
+
+if (!isNotEmptyString(getApiKey()) && !isNotEmptyString(getAccessToken()))
   throw new Error('Missing OPENAI_API_KEY or OPENAI_ACCESS_TOKEN environment variable')
 
 let api: ChatGPTAPI | ChatGPTUnofficialProxyAPI
 
-(async () => {
+function setUpApi() {
   // More Info: https://github.com/transitive-bullshit/chatgpt-api
 
-  if (isNotEmptyString(process.env.OPENAI_API_KEY)) {
+  if (isNotEmptyString(getApiKey())) {
     const OPENAI_API_BASE_URL = process.env.OPENAI_API_BASE_URL
     const OPENAI_API_MODEL = process.env.OPENAI_API_MODEL
     const model = isNotEmptyString(OPENAI_API_MODEL) ? OPENAI_API_MODEL : 'gpt-3.5-turbo'
 
     const options: ChatGPTAPIOptions = {
-      apiKey: process.env.OPENAI_API_KEY,
+      apiKey: getApiKey(),
       completionParams: { model },
       debug: !disableDebug,
     }
@@ -68,10 +83,10 @@ let api: ChatGPTAPI | ChatGPTUnofficialProxyAPI
     api = new ChatGPTAPI({ ...options })
     apiModel = 'ChatGPTAPI'
   }
-  else {
+  else if (isNotEmptyString(getAccessToken())) {
     const OPENAI_API_MODEL = process.env.OPENAI_API_MODEL
     const options: ChatGPTUnofficialProxyAPIOptions = {
-      accessToken: process.env.OPENAI_ACCESS_TOKEN,
+      accessToken: getAccessToken(),
       debug: !disableDebug,
     }
 
@@ -87,7 +102,8 @@ let api: ChatGPTAPI | ChatGPTUnofficialProxyAPI
     api = new ChatGPTUnofficialProxyAPI({ ...options })
     apiModel = 'ChatGPTUnofficialProxyAPI'
   }
-})()
+}
+setUpApi()
 
 async function chatReplyProcess(options: RequestOptions) {
   const { message, lastContext, process, systemMessage } = options
@@ -127,7 +143,7 @@ async function chatReplyProcess(options: RequestOptions) {
 async function fetchBalance() {
   // 计算起始日期和结束日期
 
-  const OPENAI_API_KEY = process.env.OPENAI_API_KEY
+  const OPENAI_API_KEY = getApiKey()
   const OPENAI_API_BASE_URL = process.env.OPENAI_API_BASE_URL
 
   if (!isNotEmptyString(OPENAI_API_KEY))
@@ -213,4 +229,4 @@ function currentModel(): ApiModel {
 
 export type { ChatContext, ChatMessage }
 
-export { chatReplyProcess, chatConfig, currentModel }
+export { chatReplyProcess, chatConfig, currentModel, setUpApi, setApiKey, setAccessToken }

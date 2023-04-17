@@ -36,6 +36,15 @@ function handleReset() {
         </NButton>
       </div>
       <div class="flex items-center space-x-4">
+        <span class="flex-shrink-0 w-[90px]">OPENAI_API_KEY</span>
+        <div class="flex-1">
+          <NInput v-model:value="systemMessage" type="textarea" :autosize="{ minRows: 1, maxRows: 4 }" />
+        </div>
+        <NButton size="tiny" text type="primary" @click="updateSettings({ systemMessage })">
+          {{ $t('common.save') }}
+        </NButton>
+      </div>
+      <div class="flex items-center space-x-4">
         <span class="flex-shrink-0 w-[100px]">&nbsp;</span>
         <NButton size="small" @click="handleReset">
           {{ $t('common.reset') }}
